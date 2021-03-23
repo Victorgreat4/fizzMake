@@ -1,0 +1,28 @@
+name: c-cpp_build_release
+
+
+on:
+  push:
+    tags: [ v* ]
+    
+    jobs:
+    
+      build:
+        runs-on: windows-latest
+        steps:
+          - uses: actions/checkout@v2
+          - name: compile program
+          run: sh compile_application.sh
+          shell: bash
+          
+          - uses: papeloto/action-zip@v1
+          with:
+          files: build/
+          dest: result.zip
+          
+          
+          - uses: ncipollo/release-action@v1
+          with:
+            artifacts: "result.zip"
+            bodyfile: "README.md"
+            token: ${{ secrets.GITHUB_TOKEN }}
